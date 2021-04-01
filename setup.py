@@ -1,18 +1,20 @@
 """Documentation Generator for wandb."""
-from setuptools import setup
+from setuptools import setup find_packages
 
-PROJECT_NAME = 'docugen'
-VERSION = '0.0.0'
+project_name = 'docugen'
+version = '0.0.0'
 REQUIRED_PKGS = [
     'astor',
 ]
 
 setup(
-    name=PROJECT_NAME,
-    version=VERSION,
+    name=project_name,
+    version=version,
     description="A documentation generator.",
     author="Artira Roy Gosthipaty",
     author_email="aritra.born2fly@gmail.com",
+    url='http://github.com/ariG23498/docugen',
+    download_url='https://github.com/ariG23498/docugen/tags',
     install_requires=REQUIRED_PKGS,
-    packages=['docugen'],
+    packages=find_packages('.'),
 )
