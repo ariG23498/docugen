@@ -14,4 +14,5 @@ setup(
     author="Artira Roy Gosthipaty",
     author_email="aritra.born2fly@gmail.com",
     install_requires=REQUIRED_PKGS,
+    packages=['docugen'],
 )
