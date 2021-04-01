@@ -595,70 +595,6 @@ def extract(py_modules,
 EXCLUDED = set(['__init__.py', 'OWNERS', 'README.txt'])
 
 
-def replace_refs(
-    src_dir: str,
-    output_dir: str,
-    reference_resolvers: List[parser.ReferenceResolver],
-    api_docs_relpath: List[str],
-    file_pattern: str = '*.md',
-):
-  """Link `tf.symbol` references found in files matching `file_pattern`.
-
-  A matching directory structure, with the modified files is
-  written to `output_dir`.
-
-  `{"__init__.py","OWNERS","README.txt"}` are skipped.
-
-  Files not matching `file_pattern` (using `fnmatch`) are copied with no change.
-
-  Also, files in the `api_guides/python` directory get explicit ids set on all
-  heading-2s to ensure back-links work.
-
-  Args:
-    src_dir: The directory to convert files from.
-    output_dir: The root directory to write the resulting files to.
-    reference_resolvers: A list of `parser.ReferenceResolver` to make the
-      replacements.
-    api_docs_relpath: List of relative-path strings to the api_docs from the
-      src_dir for each reference_resolver.
-    file_pattern: Only replace references in files matching file_patters, using
-      `fnmatch`. Non-matching files are copied unchanged.
-  """
-
-  # Iterate through all the source files and process them.
-  for dirpath, _, filenames in os.walk(src_dir):
-    depth = os.path.relpath(src_dir, start=dirpath)
-    # Make the directory under output_dir.
-    new_dir = os.path.join(output_dir,
-                           os.path.relpath(path=dirpath, start=src_dir))
-    if not os.path.exists(new_dir):
-      os.makedirs(new_dir)
-
-    for base_name in filenames:
-      if base_name in EXCLUDED:
-        continue
-      full_in_path = os.path.join(dirpath, base_name)
-
-      suffix = os.path.relpath(path=full_in_path, start=src_dir)
-      full_out_path = os.path.join(output_dir, suffix)
-      # Copy files that do not match the file_pattern, unmodified.
-      if not fnmatch.fnmatch(base_name, file_pattern):
-        if full_in_path != full_out_path:
-          shutil.copyfile(full_in_path, full_out_path)
-        continue
-
-      with open(full_in_path, 'rb') as f:
-        content = f.read().decode('utf-8')
-
-      for resolver, rel_path in zip(reference_resolvers, api_docs_relpath):
-        # If `rel_path` is an absolute path, `depth` is just discarded.
-        relative_path_to_root = os.path.join(depth, rel_path)
-        content = resolver.replace_references(content, relative_path_to_root)
-
-      with open(full_out_path, 'wb') as f:
-        f.write((content + '\n').encode('utf-8'))
-
-
 class DocGenerator:
   """Main entry point for generating docs."""
 
@@ -789,15 +725,6 @@ class DocGenerator:
     # Extract the python api from the _py_modules
     visitor = self.run_extraction()
     reference_resolver = self.make_reference_resolver(visitor)
-    # Replace all the `tf.symbol` references in the workdir.
-    replace_refs(
-        src_dir=str(workdir),
-        output_dir=str(workdir),
-        reference_resolvers=[reference_resolver],
-        api_docs_relpath=['api_docs'],
-        file_pattern='*.md',
-    )
-
     # Write the api docs.
     parser_config = self.make_parser_config(visitor, reference_resolver)
     work_py_dir = workdir / 'api_docs/python'
