@@ -422,7 +422,6 @@ def write_docs(
     yaml_toc: bool,
     root_module_name: str,
     root_title: str = 'TensorFlow',
-    search_hints: bool = True,
     site_path: str = 'api_docs/python',
     gen_redirects: bool = True,
     extra_docs: Optional[Dict[int, str]] = None,
@@ -443,8 +442,6 @@ def write_docs(
     yaml_toc: Set to `True` to generate a "_toc.yaml" file.
     root_module_name: (str) the name of the root module (`tf` for tensorflow).
     root_title: The title name for the root level index.md.
-    search_hints: (bool) include meta-data search hints at the top of each
-      output file.
     site_path: The output path relative to the site root. Used in the
       `_toc.yaml` and `_redirects.yaml` files.
     gen_redirects: Bool which decides whether to generate _redirects.yaml file
@@ -575,8 +572,7 @@ def write_docs(
   with open(output_dir / root_module_name / 'all_symbols.md', 'w') as f:
     global_index = parser.generate_global_index(
         root_title, parser_config.index, parser_config.reference_resolver)
-    if not search_hints:
-      global_index = 'robots: noindex\n' + global_index
+    global_index = 'robots: noindex\n' + global_index
     f.write(global_index)
 
 
@@ -723,7 +719,6 @@ class DocGenerator:
       callbacks: Optional[List[public_api.ApiFilter]] = None,
       gen_redirects: bool = True,
       extra_docs: Optional[Dict[int, str]] = None,
-      search_hints: bool = True,
       site_path: str = 'api_docs/python',
       yaml_toc: bool = True,
   ):
@@ -739,7 +734,6 @@ class DocGenerator:
         in" paths. These are zipped with `base-dir`, to set the `defined_in`
         path for each file. The defined in link for `{base_dir}/path/to/file` is
         set to `{code_url_prefix}/path/to/file`.
-      search_hints: Bool. Include metadata search hints at the top of each file.
       site_path: Path prefix in the "_toc.yaml"
       private_map: A {"module.path.to.object": ["names"]} dictionary. Specific
         aliases that should not be shown in the resulting docs.
@@ -785,7 +779,6 @@ class DocGenerator:
                        'elements as the `code_url_prefix` list (they get '
                        'zipped together).')
 
-    self._search_hints = search_hints
     self._site_path = site_path
     self._private_map = private_map or {}
     self._visitor_cls = visitor_cls
@@ -860,7 +853,6 @@ class DocGenerator:
         yaml_toc=self._yaml_toc,
         root_title=self._root_title,
         root_module_name=self._short_name.replace('.', '/'),
-        search_hints=self._search_hints,
         site_path=self._site_path,
         gen_redirects=self._gen_redirects,
         extra_docs=self._extra_docs,
