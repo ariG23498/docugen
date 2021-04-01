@@ -395,26 +395,6 @@ class GenerateToc(object):
     return {'toc': toc}
 
 
-def _get_headers(page_info: parser.PageInfo, search_hints: bool) -> List[str]:
-  """Returns the list of header lines for this page."""
-  hidden = doc_controls.should_hide_from_search(page_info.py_object)
-  brief_no_backticks = page_info.doc.brief.replace('`', '').strip()
-  headers = []
-  if brief_no_backticks:
-    headers.append(f'description: {brief_no_backticks}')
-
-  # It's easier to read if there's a blank line after the `name:value` headers.
-  if search_hints and not hidden:
-    if headers:
-      headers.append('')
-    headers.append(page_info.get_metadata_html())
-  else:
-    headers.append('robots: noindex')
-    headers.append('')
-
-  return headers
-
-
 def write_docs(
     *,
     output_dir: Union[str, pathlib.Path],
