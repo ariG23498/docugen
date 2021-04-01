@@ -1,5 +1,5 @@
 """Documentation Generator for wandb."""
-from setuptools import setup find_packages
+from setuptools import setup, find_packages
 
 project_name = 'docugen'
 version = '0.0.0'
