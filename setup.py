@@ -5,6 +5,7 @@ project_name = 'docugen'
 version = '0.0.0'
 REQUIRED_PKGS = [
     'astor',
+    'protobuf>=3.14',
 ]
 
 setup(
