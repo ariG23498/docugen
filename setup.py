@@ -5,7 +5,9 @@ project_name = 'docugen'
 version = '0.0.0'
 REQUIRED_PKGS = [
     'astor',
+    'absl-py',
     'protobuf>=3.14',
+    'pyyaml',
 ]
 
 setup(
