@@ -16,7 +16,6 @@ from docugen import parser
 from docugen import pretty_docs
 from docugen import public_api
 from docugen import traverse
-# from docugen.report import utils
 
 import yaml
 
@@ -476,8 +475,8 @@ def write_docs(
   # Collect redirects for an api _redirects.yaml file.
   redirects = []
 
-  if gen_report:
-    api_report_obj = utils.ApiReport()
+  # if gen_report:
+  #   api_report_obj = utils.ApiReport()
 
   # Parse and write Markdown pages, resolving cross-links (`tf.symbol`).
   for full_name in sorted(parser_config.index.keys(), key=lambda k: k.lower()):

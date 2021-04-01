@@ -7,4 +7,3 @@ from docugen import parser
 from docugen import pretty_docs
 from docugen import public_api
 from docugen import traverse
-from docugen import utils
